@@ -37,4 +37,4 @@ ensemble.
 
 All the algorithm classes have Evaluate method which reports the accuracy on leave-one-out test set.
 
-Further, I plan to inroduce AutoEncoders, RBM and matrix factorization methods as well.
+Further, I plan to introduce AutoEncoders, RBM and matrix factorization methods as well.
