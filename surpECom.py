@@ -12,13 +12,21 @@ from surprise.model_selection import train_test_split
 from surprise.model_selection import LeaveOneOut
 
 class surpECom:
+    """
+    Takes in a pandas dataframe and converts into surprise dataset framework.
+    params:
+    df: pandas dataframe
+    popRankings: dictionary sorted with popular items.
+    """
     def __init__(self, df, popRankings):
         #Build a full training set for evaluating overall properties
         self.df = df
         self.data = self._convertToSurprise()
         self.rankings = popRankings
         
+        # training set for the entire data
         self.fullTrainSet = self.data.build_full_trainset()
+        # anti-test set for the entire training data
         self.fullAntiTestSet = self.fullTrainSet.build_anti_testset()
         
         #Build a 75/25 train/test split for measuring accuracy
@@ -40,6 +48,7 @@ class surpECom:
         return self.fullAntiTestSet
     
     def GetAntiTestSetForUser(self, testSubject):
+        # Get all the items not bought by a particular user
         trainset = self.fullTrainSet
         fill = trainset.global_mean
         anti_testset = []
@@ -60,6 +69,7 @@ class surpECom:
         return self.LOOCVAntiTestSet
     
     def _convertToSurprise(self):
+        ''' converting the data'''
         reader = Reader(line_format='user item rating', skip_lines=1)
         surpData = Dataset.load_from_df(self.df, reader)
         return surpData
