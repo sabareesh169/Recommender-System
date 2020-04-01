@@ -12,17 +12,31 @@ from Metrics import Metrics
 from surprise import KNNBasic
 
 class HybridAlgorithm:
-    
+    '''
+    Combines the user based and item based approaches.
+    '''
     def __init__(self, type_of_alg = [UserBased, ItemBased], base_alg = KNNBasic()):
         self.algorithms = []
         for algorithm in type_of_alg:
             self.algorithms.append(eval(algorithm.__name__)(base_alg, algorithm.__name__))
         
     def fit(self, ECom):
+        '''
+        Calls fit method on all the algorithms
+        '''
         for algorithm in self.algorithms:
             algorithm.fit(ECom)
             
+    def addAlgorithm(self, algorithm, base_alg):
+        '''
+        Possibility of adding other algorithms.
+        '''
+        self.algorithms.append(eval(algorithm.__name__)(base_alg, algorithm.__name__))
+        
     def SampleTopNRecs(self, ECom, n=10, testOrderID=68137):
+        '''
+        Prints out the top N recommendations for a particular order.
+        '''
         trainSet = ECom.surpData.fullTrainSet
         print('\nRecommendations:')
         for itemID, _ in self.getTopNRecs(trainSet, testOrderID, n=10):
@@ -42,9 +56,15 @@ class HybridAlgorithm:
         return topN
     
     def combine(self, dict1, dict2):
+        '''
+        Combines the predictions from the different algorithms.
+        '''
         return {k: 1/dict1.get(k, 1000) + 1/dict2.get(k, 1000) for k in set(dict1) | set(dict2)}
     
     def Evaluate(self, ECom, n=10, verbose=True):
+        '''
+        Measures the performance of the algorithm by testing on 'leave one out' training data.
+        '''
         metrics = {}
         print("Evaluating hit rate...")
         self.fit(ECom)
