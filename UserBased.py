@@ -10,13 +10,19 @@ from collections import defaultdict
 from Metrics import Metrics
 
 class UserBased(Algorithm):
-    
+    '''
+    Inherits the Algorithm base class.
+    Performs collaborative filtering based on the purchases of past customer orders.
+    '''
     def __init__(self, algorithm, name):
         Algorithm.__init__(self, algorithm, name, sim_options={})
         self.algorithm.sim_options['user_based'] = True
         self.algorithm.sim_options['name'] = 'cosine'
         
     def getAllRecs(self,  trainSet, testOrderID=68137):
+        '''
+        Returns a dictionary of all the possible recommendations for a particular order
+        '''
         testOrderInnerID = trainSet.to_inner_uid(testOrderID)
         similarityRow = self.simsMatrix[testOrderInnerID]
         
@@ -30,6 +36,9 @@ class UserBased(Algorithm):
         return candidates            
         
     def SampleTopNRecs(self, ECom, n=10, testOrderID=68137):
+        '''
+        Prints out the top N recommendations for a particular order.
+        '''
         trainSet = ECom.surpData.fullTrainSet
         candidates = self.getAllRecs(trainSet, testOrderID)
         topN = self.getTopN(testOrderID, candidates, trainSet, n)
@@ -38,6 +47,9 @@ class UserBased(Algorithm):
             print(ECom.getItemName(int(rec[0])))
             
     def Evaluate(self, ECom, n=10, verbose=True):
+        '''
+        Measures the performance of the algorithm by testing on 'leave one out' training data.
+        '''
         metrics = {}
         print("Evaluating hit rate...")
         self.fit(ECom)
