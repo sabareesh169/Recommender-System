@@ -35,7 +35,7 @@ class UserBased(Algorithm):
                     candidates[rating[0]] += score
         return candidates            
         
-    def SampleTopNRecs(self, ECom, n=10, testOrderID=68137):
+    def sampleTopNRecs(self, ECom, n=10, testOrderID=68137):
         '''
         Prints out the top N recommendations for a particular order.
         '''
@@ -46,12 +46,13 @@ class UserBased(Algorithm):
         for rec in topN:
             print(ECom.getItemName(int(rec[0])))
             
-    def Evaluate(self, ECom, n=10, verbose=True):
+    def evaluate(self, ECom, n=10, verbose=True):
         '''
         Measures the performance of the algorithm by testing on 'leave one out' training data.
         '''
         metrics = {}
-        print("Evaluating hit rate...")
+        
+        # Leave one out test and training sets
         leftOutPredictions = ECom.surpData.GetLOOCVTestSet()
         leftOutTrainingSet = ECom.surpData.GetLOOCVTrainSet()
         topNPredicted = defaultdict(list)
@@ -60,5 +61,6 @@ class UserBased(Algorithm):
         for orderID, itemID, _ in leftOutPredictions:
             candidates = self.getAllRecs(leftOutTrainingSet, orderID)
             topNPredicted[int(orderID)] = self.getTopN(orderID, candidates, leftOutTrainingSet, n)
+        print("Evaluating hit rate...")
         metrics["HR"] = Metrics.HitRate(topNPredicted, leftOutPredictions)
         return metrics
