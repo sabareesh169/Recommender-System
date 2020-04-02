@@ -4,9 +4,9 @@ Created on Wed Apr  1 01:35:43 2020
 
 @author: sabareesh
 """
-from Algorithm import Algorithm
+from .algorithm import Algorithm
 from collections import defaultdict
-from Metrics import Metrics
+from .metrics import Metrics
 
 class ItemBased(Algorithm):
     '''
@@ -49,13 +49,17 @@ class ItemBased(Algorithm):
         Measures the performance of the algorithm by testing on 'leave one out' training data.
         '''
         metrics = {}
-        print("Evaluating hit rate...")
-        self.fit(ECom)
+        
+        # Leave one out test and training sets
         leftOutPredictions = ECom.surpData.GetLOOCVTestSet()
         leftOutTrainingSet = ECom.surpData.GetLOOCVTrainSet()
         topNPredicted = defaultdict(list)
+        self.fit(leftOutTrainingSet)
+        
         for orderID, itemID, _ in leftOutPredictions:
             candidates = self.getAllRecs(leftOutTrainingSet, orderID)
             topNPredicted[int(orderID)] = self.getTopN(orderID, candidates, leftOutTrainingSet, n)
+        
+        print("Evaluating hit rate...")
         metrics["HR"] = Metrics.HitRate(topNPredicted, leftOutPredictions)
         return metrics
