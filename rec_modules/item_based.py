@@ -33,7 +33,7 @@ class ItemBased(Algorithm):
                     candidates[innerID] += score 
         return candidates            
         
-    def SampleTopNRecs(self, ECom, n=10, testOrderID=68137):
+    def sampleTopNRecs(self, ECom, n=10, testOrderID=68137):
         '''
         Prints out the top N recommendations for a particular order.
         '''
@@ -44,7 +44,7 @@ class ItemBased(Algorithm):
         for rec in topN:
             print(ECom.getItemName(int(rec[0])))
 
-    def Evaluate(self, ECom, n=10, verbose=True):
+    def evaluate(self, ECom, n=10, verbose=True):
         '''
         Measures the performance of the algorithm by testing on 'leave one out' training data.
         '''
