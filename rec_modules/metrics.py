@@ -17,14 +17,14 @@ class Metrics:
         Mean absolute error on the predictions of items. Lower the beeter.
         Not a useful statistics for this partiular problem as we track orders and not users
         '''
-        return accuracy.mae(predictions, verbose=False)
+        return accuracy.mae(predictions)
 
     def RMSE(predictions):
         ''' 
         Root mean square error on the predictions of items. Lower the better.
         Not a useful statistics for this partiular problem as we track orders and not users
         '''
-        return accuracy.rmse(predictions, verbose=False)
+        return accuracy.rmse(predictions)
 
     def HitRate(topNPredicted, leftOutPredictions):
         '''
