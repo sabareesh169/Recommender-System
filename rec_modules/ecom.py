@@ -8,7 +8,7 @@ Created on Wed Apr  1 01:32:39 2020
 import pandas as pd
 from collections import defaultdict
 
-from surpECom import surpECom
+from .surp_ecom import surpECom
 
 class ECom:
     """
@@ -49,9 +49,9 @@ class ECom:
         hitOrder = False
         for index, row in self.df.iterrows():
             orderID = int(row[0])
-            if order == order_id:
+            if order == orderID:
                 itemId = int(row[1])
-                itemName = self.getItemName(itemID)
+                itemName = self.getItemName(itemId)
                 orderPurchases.append((itemId, itemName))
                 hitOrder = True
             if hitOrder and (orderID != order):
@@ -88,11 +88,18 @@ class ECom:
             return 4569
         
     def _preprocess(self, order_col, min_order_size):
+        # drop small orders
         self._drop_small_orders(order_col, min_order_size)
+        
+        # assign item id to each unique object
         self.df['itemID'] = self.df.groupby(['l3']).ngroup()
+        
+        # item name to id and vice versa dictionaries
         self._makeItemNameDict()
         self._makeItemIdDict()
         self.df['rating'] = 1
+        
+        #sort by order ids
         self.df = self.df[['order_number', 'itemID', 'rating']].sort_values('order_number')
     
     def _drop_small_orders(self, order_col='order_number', min_order_size=2):
