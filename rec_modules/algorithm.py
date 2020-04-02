@@ -15,13 +15,13 @@ class Algorithm(object):
         self.algorithm = algorithm
         self.name= name
     
-    def fit(self, ECom):
+    def fit(self, trainSet):
         '''
         Fit on the training set.
         Computes the similarity matrix for evaluations.
         '''
         print("\nUsing recommender ", self.GetName())
-        self.algorithm.fit(ECom.surpData.fullTrainSet)
+        self.algorithm.fit(trainSet)
         self.simsMatrix = self.algorithm.compute_similarities()
                 
     def getTopN(self, testOrderID, candidates, trainSet, n):
