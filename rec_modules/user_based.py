@@ -5,9 +5,9 @@ Created on Wed Apr  1 01:34:46 2020
 @author: sabareesh
 """
 
-from Algorithm import Algorithm
+from .algorithm import Algorithm
 from collections import defaultdict
-from Metrics import Metrics
+from .metrics import Metrics
 
 class UserBased(Algorithm):
     '''
@@ -52,10 +52,11 @@ class UserBased(Algorithm):
         '''
         metrics = {}
         print("Evaluating hit rate...")
-        self.fit(ECom)
         leftOutPredictions = ECom.surpData.GetLOOCVTestSet()
         leftOutTrainingSet = ECom.surpData.GetLOOCVTrainSet()
         topNPredicted = defaultdict(list)
+        self.fit(leftOutTrainingSet)
+           
         for orderID, itemID, _ in leftOutPredictions:
             candidates = self.getAllRecs(leftOutTrainingSet, orderID)
             topNPredicted[int(orderID)] = self.getTopN(orderID, candidates, leftOutTrainingSet, n)
