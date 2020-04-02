@@ -7,24 +7,21 @@ Created on Wed Apr  1 01:59:29 2020
 
 from surprise import KNNBasic
 
-from ECom import ECom
-from UserBased import UserBased
-from ItemBased import ItemBased
-from HybridAlgorithm import HybridAlgorithm
+import rec_modules
 
 # Load the dataset.
-ecom = ECom('Par Transations - 2 Weeks.txt', format='tsv')
+ecom = rec_modules.ECom('PartialTransactions_2Weeks.txt', format='tsv')
 
 # User based recommendations
 UserKNN = KNNBasic()
-userAlg = UserBased(UserKNN, 'user based knn')
-userAlg.Evaluate(ecom)
+userAlg = rec_modules.UserBased(UserKNN, 'user based knn')
+print(userAlg.evaluate(ecom))
 
 # Item based recommendations.
 ItemKNN = KNNBasic()
-itemAlg = ItemBased(ItemKNN, 'item based knn')
-itemAlg.Evaluate(ecom)
+itemAlg = rec_modules.ItemBased(ItemKNN, 'item based knn')
+print(itemAlg.evaluate(ecom))
 
 # Algorithm combining both the approaches.
-hybrid = HybridAlgorithm()
-hybrid.Evaluate(ecom)
+hybrid = rec_modules.HybridAlgorithm()
+print(hybrid.evaluate(ecom))
