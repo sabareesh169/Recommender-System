@@ -5,27 +5,29 @@ Created on Wed Apr  1 01:36:27 2020
 @author: sabareesh
 """
 
-from UserBased import UserBased
-from ItemBased import ItemBased
+from .user_based import UserBased
+from .item_based import ItemBased
 from collections import defaultdict
-from Metrics import Metrics
+from .metrics import Metrics
 from surprise import KNNBasic
 
 class HybridAlgorithm:
     '''
     Combines the user based and item based approaches.
     '''
-    def __init__(self, type_of_alg = [UserBased, ItemBased], base_alg = KNNBasic()):
+    def __init__(self, type_of_alg = [UserBased, ItemBased], base_alg = \
+                 [KNNBasic(sim_options={'user_based':True}), \
+                  KNNBasic(sim_options={'user_based':False})]):
         self.algorithms = []
-        for algorithm in type_of_alg:
-            self.algorithms.append(eval(algorithm.__name__)(base_alg, algorithm.__name__))
+        for algorithm, base in zip(type_of_alg, base_alg):
+            self.algorithms.append(eval(algorithm.__name__)(base, algorithm.__name__))
         
-    def fit(self, ECom):
+    def fit(self, trainSet):
         '''
         Calls fit method on all the algorithms
         '''
         for algorithm in self.algorithms:
-            algorithm.fit(ECom)
+            algorithm.fit(trainSet)
             
     def addAlgorithm(self, algorithm, base_alg):
         '''
