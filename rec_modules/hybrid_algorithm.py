@@ -35,7 +35,7 @@ class HybridAlgorithm:
         '''
         self.algorithms.append(eval(algorithm.__name__)(base_alg, algorithm.__name__))
         
-    def SampleTopNRecs(self, ECom, n=10, testOrderID=68137):
+    def sampleTopNRecs(self, ECom, n=10, testOrderID=68137):
         '''
         Prints out the top N recommendations for a particular order.
         '''
@@ -63,18 +63,18 @@ class HybridAlgorithm:
         '''
         return {k: 1/dict1.get(k, 1000) + 1/dict2.get(k, 1000) for k in set(dict1) | set(dict2)}
     
-    def Evaluate(self, ECom, n=10, verbose=True):
+    def evaluate(self, ECom, n=10, verbose=True):
         '''
         Measures the performance of the algorithm by testing on 'leave one out' training data.
         '''
         metrics = {}
-        print("Evaluating hit rate...")
-        self.fit(ECom)
         leftOutPredictions = ECom.surpData.GetLOOCVTestSet()
         leftOutTrainingSet = ECom.surpData.GetLOOCVTrainSet()
+        self.fit(leftOutTrainingSet)
         
         topNPredicted = defaultdict(list)
         for orderID, itemID, _ in leftOutPredictions:
             topNPredicted[int(orderID)] = self.getTopNRecs(leftOutTrainingSet, orderID)
+        print("Evaluating hit rate...")
         metrics["HR"] = Metrics.HitRate(topNPredicted, leftOutPredictions)
         return metrics
